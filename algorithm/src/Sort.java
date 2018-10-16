@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Sort {
@@ -47,7 +48,8 @@ public class Sort {
 //        testShell02(num);
 //        testQuick(num, 0, 7);
 //        testMerge(num);
-        testHeap(num = new int[]{2,5,3,4,1,2,7});
+//        testHeap(num = new int[]{2,5,3,4,1,2,7});
+        testCount(num = new int[]{1,2,4,3,4,0,5,4,3,0}, 6);
 
         System.out.println("after sort: ");
         printArr(num);
@@ -240,6 +242,31 @@ public class Sort {
         }
     }
 
+    //计
+
+    /**
+     * @param arr 不能有负数
+     * @param max
+     */
+    public void testCount(int[] arr, int max) {
+        int total = arr.length;
+        int[] originArr = Arrays.copyOf(arr, total);
+        int[] countArr = new int[max + 1]; //统计所有元素出现个数的数组，max+1长度是为了统计0
+        //int[] sortedArr = new int[total]; //用于存放已排序元素的数组
+        for (int i = 0; i < total; i++) {
+            countArr[originArr[i]] ++; //统计原始数组各个元素出现的次数
+        }
+        int sum = 0;
+        for (int i = 0; i < max+1; i++) {
+            sum += countArr[i];
+            countArr[i] = sum; //进一步统计，各个元素前面有几个元素【包括当前元素数量】
+        }
+        for (int i = total-1; i >= 0; i--) {
+            int curVal = originArr[i];
+            arr[countArr[curVal]-1] = curVal; //根据统计结果，找到当前元素应排的位置
+            countArr[curVal] --; //将当前元素的统计结果自减，便于对相同值的元素排序
+        }
+    }
 
     @Test
     public void testDirectSwap() {
