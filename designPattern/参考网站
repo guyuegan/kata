@@ -8,7 +8,7 @@ https://www.cnblogs.com/yjd_hycf_space/p/7526608.html
 排序算法：
 http://www.cnblogs.com/huangxincheng/archive/2012/12/06/2804756.html
 
-带动图 - 排序
+【十大经典排序】带动图
 https://www.cnblogs.com/onepixel/articles/7674659.html
 
 有图简码 - 希尔排序
@@ -26,5 +26,27 @@ https://www.cnblogs.com/MOBIN/p/5374217.html
 
 计数排序
 https://www.cnblogs.com/developerY/p/3166462.html
+https://blog.csdn.net/HelloZEX/article/details/80780953
+https://blog.csdn.net/YinhJiang/article/details/80397415
+https://blog.csdn.net/developer1024/article/details/79770240【桶排和计排关系】
+
+桶排序
+https://blog.csdn.net/sunjinshengli/article/details/70738527
+
+非比较排序 【基桶计总结】
+https://www.cnblogs.com/protected/p/6603536.html
+
+
+二维数组长度：定义一个二维数组array[][]，array.length即为数组的长度，array[i].length为每一行的宽度。
+https://blog.csdn.net/swjtu2014112194/article/details/79259736
+合并数组
+https://blog.csdn.net/liu_005/article/details/72760392
+//数组实际大小
+https://ask.csdn.net/questions/377513
+//不定长二维数组
+https://blog.csdn.net/cxc19890214/article/details/45541213
+
+stream分组，过滤，求和
+https://blog.csdn.net/wushiwude/article/details/81078350
 
 

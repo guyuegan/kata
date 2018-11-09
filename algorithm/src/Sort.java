@@ -1,7 +1,7 @@
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class Sort {
 
@@ -16,11 +16,25 @@ public class Sort {
         System.out.println();
     }
 
-    public int[] initArr(int length, int max){
+    public int[] initArrNegative(int length, int max){
         Random random = new Random();
         int[] num = new int[length];
         for (int i = 0; i < num.length; i++) {
             num[i] = random.nextInt(max) - max/2; // -max/2 -- max/2
+        }
+
+        return num;
+    }
+
+    public int[] initArrPositive(int length, int max){
+        Random random = new Random();
+        int[] num = new int[length];
+        for (int i = 0; i < num.length; i++) {
+            if (i%10 == 0) {
+                num[i] = 0;
+            } else {
+                num[i] = random.nextInt(max);
+            }
         }
 
         return num;
@@ -36,7 +50,7 @@ public class Sort {
     @Test
     public void testSort(){
 
-        int[] num = initArr(10, 10);
+        int[] num = initArrPositive(20, 20);
 //        int[] num = new int[]{2,5,3,4,8,1,2,7};
         System.out.println("before sort: ");
         printArr(num);
@@ -49,12 +63,11 @@ public class Sort {
 //        testQuick(num, 0, 7);
 //        testMerge(num);
 //        testHeap(num = new int[]{2,5,3,4,1,2,7});
-        testCount(num = new int[]{1,2,4,3,4,0,5,4,3,0}, 6);
-
+//        testCount(num = new int[]{1,2,4,3,4,0,5,4,3,0}, 6);
+        testBucket(num, 20);
         System.out.println("after sort: ");
         printArr(num);
     }
-
 
     //冒：真正的冒泡，有两两对比
     public void testBubble(int[] num){
@@ -245,26 +258,82 @@ public class Sort {
     //计
 
     /**
-     * @param arr 不能有负数
-     * @param max
+     * @param arr 不能有负数、小数
+     * @param max 最大值不宜太大
      */
     public void testCount(int[] arr, int max) {
         int total = arr.length;
         int[] originArr = Arrays.copyOf(arr, total);
         int[] countArr = new int[max + 1]; //统计所有元素出现个数的数组，max+1长度是为了统计0
-        //int[] sortedArr = new int[total]; //用于存放已排序元素的数组
         for (int i = 0; i < total; i++) {
-            countArr[originArr[i]] ++; //统计原始数组各个元素出现的次数
+            countArr[originArr[i]] ++; //统计原始数组各个元素出现的次数【出现一次，在下标等于元素值的位置插一个小旗】
         }
-        int sum = 0;
-        for (int i = 0; i < max+1; i++) {
-            sum += countArr[i];
-            countArr[i] = sum; //进一步统计，各个元素前面有几个元素【包括当前元素数量】
+        for (int i = 1; i < max+1; i++) {
+            countArr[i] += countArr[i-1]; //累计当前位置前面，总共的小旗数量，这样就能算出当前元素，在最终排序数组的位置
         }
         for (int i = total-1; i >= 0; i--) {
             int curVal = originArr[i];
             arr[countArr[curVal]-1] = curVal; //根据统计结果，找到当前元素应排的位置
             countArr[curVal] --; //将当前元素的统计结果自减，便于对相同值的元素排序
+        }
+    }
+
+    //桶
+    public void testBucket(int[] arr, int max) {
+
+        int bucketNum = max%10==0 ? (max/10) : (max/10+1); //统计需要的桶数量【每个桶的存放跨度是10】
+        int[][] allBucket = new int[bucketNum][10*2]; //每个桶存放跨度是10，但存量不一定是10
+        //记录各个桶实际大小
+        Map<Integer, Integer> allBucketSize = new HashMap(bucketNum){{
+            for (int i = 0; i < bucketNum; i++) {
+                put(i, 0);
+            }
+        }};
+
+        //将要排序的数据，散列到各个桶
+        for (int i = 0; i < arr.length; i++) {
+            int bucketIdx = arr[i]/10; //计算当前数值存放在哪个桶
+            Integer curBucketSize = allBucketSize.get(bucketIdx); //当前桶的实际大小, 即当前数值存放桶（数组）的哪个位置
+            allBucket[bucketIdx][curBucketSize] = arr[i];
+            allBucketSize.replace(bucketIdx, curBucketSize+1); //当前桶实际大小+1
+        }
+        System.out.println("原始数据散列到各个桶: " +  Arrays.deepToString(allBucket));
+
+        //将每个桶的0去掉
+        int[][] allBucketWithout_0 = new int[bucketNum][];
+        for (int i = 0; i < bucketNum; i++) {
+            allBucketWithout_0[i] = new int[allBucketSize.get(i)]; //根据每个桶实际长度，创建不定长二维数组
+
+            int count = 0; //每个非0元素存放在allBucketWithout_0中的位置
+            for (int j = 0; j < allBucket[i].length; j++) {
+                if (0 != allBucket[i][j])
+                    allBucketWithout_0[i][count++] = allBucket[i][j];
+            }
+        }
+        allBucket = allBucketWithout_0;
+
+        //每个桶使用计数排序
+        for (int i = 0; i < bucketNum; i++) {
+            testCount(allBucket[i], (i+1)*10);
+        }
+        System.out.println("各个桶排序之后: " +  Arrays.deepToString(allBucket));
+
+
+        int totalLen = allBucketSize.values().stream().mapToInt(Integer::intValue).sum(); //计算每个桶实际长度总和
+        int offset = 0;
+        if (totalLen < arr.length) { //如果每个桶实际长度总和 小于 原始数组总长，则合并时多留几个0
+            offset = arr.length - totalLen;
+        }
+        //多个桶合并
+        int[] combineArr = new int[arr.length];
+        int skip = offset;
+        for (int i = 0; i < bucketNum; i++) {
+            System.arraycopy(allBucket[i], 0, combineArr, skip, allBucket[i].length);
+            skip += allBucket[i].length;
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = combineArr[i];
         }
     }
 
@@ -278,6 +347,17 @@ public class Sort {
 
         a>>=1;
         System.out.println(a);
+    }
+
+    @Test
+    public void testArr() {
+        int[][] arr2 = new int[3][4];
+        for (int i = 0; i < arr2.length; i++) {
+//            System.out.println("=====================");
+            for (int j = 0; j < arr2[i].length; j++) {
+//                System.out.println(i+""+j);
+            }
+        }
     }
 
 }
