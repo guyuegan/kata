@@ -64,7 +64,8 @@ public class Sort {
 //        testMerge(num);
 //        testHeap(num = new int[]{2,5,3,4,1,2,7});
 //        testCount(num = new int[]{1,2,4,3,4,0,5,4,3,0}, 6);
-        testBucket(num, 20);
+//        testBucket(num, 20);
+        testRadix(num = new int[]{1,32,624,36,124,10,35,344,3789,5460}, 5460);
         System.out.println("after sort: ");
         printArr(num);
     }
@@ -265,16 +266,22 @@ public class Sort {
         int total = arr.length;
         int[] originArr = Arrays.copyOf(arr, total);
         int[] countArr = new int[max + 1]; //统计所有元素出现个数的数组，max+1长度是为了统计0
+        /**
+         * 此时的countArr表示： 下标【元素值】 和  值【出现次数】  的关系
+         */
         for (int i = 0; i < total; i++) {
             countArr[originArr[i]] ++; //统计原始数组各个元素出现的次数【出现一次，在下标等于元素值的位置插一个小旗】
         }
-        for (int i = 1; i < max+1; i++) {
-            countArr[i] += countArr[i-1]; //累计当前位置前面，总共的小旗数量，这样就能算出当前元素，在最终排序数组的位置
+        /**
+         * 此时的countArr表示： 下标【元素值】 和  值【最终排位】  的关系
+         */
+        for (int i = 1; i < countArr.length; i++) {
+            countArr[i] += countArr[i-1]; //累计当前位置前面【包括当前位置的小旗】，总共的小旗数量，这样就能算出当前元素的最终排位
         }
         for (int i = total-1; i >= 0; i--) {
             int curVal = originArr[i];
-            arr[countArr[curVal]-1] = curVal; //根据统计结果，找到当前元素应排的位置
-            countArr[curVal] --; //将当前元素的统计结果自减，便于对相同值的元素排序
+            arr[countArr[curVal]-1] = curVal; //根据统计结果，找到当前元素应排的位置【最终排位全部往前移一位】
+            countArr[curVal] --; //将当前元素的统计结果自减【拔掉一个小旗】，便于对相同值的元素排序
         }
     }
 
@@ -337,6 +344,38 @@ public class Sort {
         }
     }
 
+    //基数
+    public void testRadix(int[] arr, int max) {
+        for (int exp = 1; max/exp > 0; exp*=10) {
+            testCountWithExp(arr, exp);
+        }
+    }
+
+    public void testCountWithExp(int[] arr, int exp) {
+        int total = arr.length;
+        int[] originArr = Arrays.copyOf(arr, total);
+        int[] countArr = new int[10]; //统计所有元素的位数值【个，十，百】，出现个数的数组
+        /**
+         * 此时的countArr表示： 下标【元素的位数值】 和  值【出现次数】  的关系
+         */
+        for (int i = 0; i < total; i++) {
+            countArr[(originArr[i]/exp)%10]++; //统计原始数组各个元素的位数值出现的次数【出现一次，在下标等于元素的的位数值的位置插一个小旗】
+        }
+        /**
+         * 此时的countArr表示： 下标【元素的位数值】 和  值【最终排位】 的关系
+         */
+        for (int i = 1; i < countArr.length; i++) {
+            countArr[i] += countArr[i - 1]; //累计当前位置前面【包括当前位置的小旗】，总共的小旗数量，这样就能算出当前元素的位数值的最终排位
+        }
+        for (int i = total-1; i >= 0; i--) {
+            int curVal = originArr[i];
+            int curValRadix = (curVal/exp)%10;
+            arr[countArr[curValRadix] - 1] = curVal; //根据统计结果，找到当前元素的位数值应排的位置【最终排位全部往前移一位】，也即元素的排位
+            countArr[curValRadix] --; //将当前元素的位数值的统计结果自减【拔掉一个小旗】，便于对相同值的元素位数值排序
+        }
+
+    }
+
     @Test
     public void testDirectSwap() {
         int a=3, b=5;
@@ -347,6 +386,11 @@ public class Sort {
 
         a>>=1;
         System.out.println(a);
+    }
+
+    @Test
+    public void testDivision() {
+        System.out.println(99/100);
     }
 
     @Test
