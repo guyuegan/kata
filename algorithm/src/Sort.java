@@ -104,7 +104,7 @@ public class Sort {
         int total = num.length;
 
         for (int i = 1; i < total; i++) {
-            int cur = num[i];
+            int cur = num[i]; //把要排序的数先备份起来
             int preIdx = i-1;
             /**
              * 将当前要排序的数，逐一和已经排序的数比较，
