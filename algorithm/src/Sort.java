@@ -60,12 +60,13 @@ public class Sort {
 //        testInsert(num);
 //        testShell(num);
 //        testShell02(num);
-//        testQuick(num, 0, 7);
+        num = new int[]{6, 1, 2, 7, 9, 3, 4, 5, 10, 8, 8, 15, 7, 6, 17, 18, 13, 0, 14, 2, 16};
+        testQuick(num, 0, num.length-1);
 //        testMerge(num);
 //        testHeap(num = new int[]{2,5,3,4,1,2,7});
 //        testCount(num = new int[]{1,2,4,3,4,0,5,4,3,0}, 6);
 //        testBucket(num, 20);
-        testRadix(num = new int[]{1,32,624,36,124,10,35,344,3789,5460}, 5460);
+//        testRadix(num = new int[]{1,32,624,36,124,10,35,344,3789,5460}, 5460);
         System.out.println("after sort: ");
         printArr(num);
     }
