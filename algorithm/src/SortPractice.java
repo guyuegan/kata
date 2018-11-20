@@ -52,6 +52,7 @@ public class SortPractice {
 
         int[] arr = {6, 1, 2, 7, 9, 3, 4, 5, 10, 8, 8, 15, 7, 6, 17, 18, 13, 0, 14, 2, 16};
 //        int[] arr = initArrPositive(20, 20);
+//        int[] arr = {6, 1, 2, 7, 9, 3, 4, 5, 10, 8};
 
         System.out.println("sort before: " + Arrays.toString(arr));
 //        bubblePractice(arr);
@@ -59,7 +60,8 @@ public class SortPractice {
 //        insertPractice(arr);
             long startTime = new Date().getTime();
 //            shellPractice(arr);
-        quickPractice(arr, 0, arr.length-1);
+//        quickPractice(arr, 0, arr.length-1);
+        mergePractice(arr);
             long endTime = new Date().getTime();
             System.out.println("耗时：" + (endTime - startTime));
         System.out.println("sort after: " + Arrays.toString(arr));
@@ -199,4 +201,53 @@ public class SortPractice {
         quickPractice(arr, l+1, right);
 
     }
+
+    //归
+    public void mergePractice(int[] arr) {
+        /**在排序前，先建好一个长度等于原数组长度的临时数组，避免递归中频繁开辟空间*/
+        int[] temp = new int[arr.length];
+        devide(arr, 0, arr.length-1, temp);
+    }
+
+    public void devide(int[] arr, int left, int right, int[] temp) {
+        if (left >= right)
+            return;
+
+        /**递归拆分系列，将系列一分为二*/
+        int mid = (left+right)/2;
+        devide(arr, left, mid, temp);
+        devide(arr, mid+1, right, temp);
+
+        /**分到不能再分，开始左右序列排序*/
+        merge(arr, left, right, temp);
+    }
+
+    public void merge(int[] arr, int left, int right, int[] temp) {
+        int mid = (left+right)/2; //左系列的边界
+        int l = left;
+        int r = mid+1;
+        int idx = 0;
+
+        /**只有排完左序列 或 右序列才能停止*/
+        while (l <= mid && r <= right) {
+            if (arr[l] <= arr[r])
+                temp[idx++] = arr[l++];
+            else
+                temp[idx++] = arr[r++];
+        }
+
+        /**如果左序列没有排完*/
+        while (l <= mid)
+            temp[idx++] = arr[l++];
+
+        /**如果右序列没有排完*/
+        while (r <= right)
+            temp[idx++] = arr[r++];
+
+        /**左右序列都排完*/
+        idx = 0;
+        while (left <= right)
+            arr[left++] = temp[idx++];
+    }
+
 }
