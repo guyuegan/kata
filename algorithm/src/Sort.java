@@ -229,7 +229,7 @@ public class Sort {
     }
 
     //堆 有问题
-    public void testHeap(int[] arr) {
+    /*public void testHeap(int[] arr) {
         int lastIdx = arr.length - 1;
         for (int i = lastIdx/2-1; i >= 0; i--) { //堆构造
             heapAdjust(arr, i, lastIdx);
@@ -238,9 +238,9 @@ public class Sort {
             swap(arr, 0, lastIdx--); //将堆顶元素与尾节点交换后，长度减1，尾元素最大
             heapAdjust(arr, 0, lastIdx); //再次对堆进行调整
         }
-    }
+    }*/
 
-    private void heapAdjust(int[] arr, int fatherIdx, int len) {
+    /*private void heapAdjust(int[] arr, int fatherIdx, int len) {
         int left, right, sonIdx; //sonIdx用来指向大的子节点
         while ((left = 2*fatherIdx+1) <= len) { //当前父节点有(左)子节点的情况
             right = left + 1; //右节点
@@ -255,7 +255,7 @@ public class Sort {
             }
             fatherIdx = sonIdx;
         }
-    }
+    }*/
 
     //计
 

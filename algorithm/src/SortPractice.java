@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class SortPractice {
 
-    public void swap(int[] arr, int a, int b) {
+    private void swap(int[] arr, int a, int b) {
         if (a == b) {
             return ;
         }
@@ -21,7 +21,7 @@ public class SortPractice {
         swap(arr, 0,0);
     }
 
-    public int[] initArrNegative(int length, int max){
+    private int[] initArrNegative(int length, int max){
         Random random = new Random();
         int[] num = new int[length];
         for (int i = 0; i < num.length; i++) {
@@ -31,7 +31,7 @@ public class SortPractice {
         return num;
     }
 
-    public int[] initArrPositive(int length, int max){
+    private int[] initArrPositive(int length, int max){
         Random random = new Random();
         int[] num = new int[length];
         for (int i = 0; i < num.length; i++) {
@@ -53,6 +53,7 @@ public class SortPractice {
         int[] arr = {6, 1, 2, 7, 9, 3, 4, 5, 10, 8, 8, 15, 7, 6, 17, 18, 13, 0, 14, 2, 16};
 //        int[] arr = initArrPositive(20, 20);
 //        int[] arr = {6, 1, 2, 7, 9, 3, 4, 5, 10, 8};
+//        int[] arr = {2, 3, 10, 7, 5, 9, 1};
 
         System.out.println("sort before: " + Arrays.toString(arr));
 //        bubblePractice(arr);
@@ -61,7 +62,8 @@ public class SortPractice {
             long startTime = new Date().getTime();
 //            shellPractice(arr);
 //        quickPractice(arr, 0, arr.length-1);
-        mergePractice(arr);
+//        mergePractice(arr);
+        heapPractice(arr);
             long endTime = new Date().getTime();
             System.out.println("耗时：" + (endTime - startTime));
         System.out.println("sort after: " + Arrays.toString(arr));
@@ -209,7 +211,7 @@ public class SortPractice {
         devide(arr, 0, arr.length-1, temp);
     }
 
-    public void devide(int[] arr, int left, int right, int[] temp) {
+    private void devide(int[] arr, int left, int right, int[] temp) {
         if (left >= right)
             return;
 
@@ -222,7 +224,7 @@ public class SortPractice {
         merge(arr, left, right, temp);
     }
 
-    public void merge(int[] arr, int left, int right, int[] temp) {
+    private void merge(int[] arr, int left, int right, int[] temp) {
         int mid = (left+right)/2; //左系列的边界
         int l = left;
         int r = mid+1;
@@ -250,4 +252,40 @@ public class SortPractice {
             arr[left++] = temp[idx++];
     }
 
+    //堆
+    public void heapPractice(int[] arr) {
+        int total = arr.length;
+         /**首次从下往上调整*/
+        for (int fatherIdx = total/2-1; fatherIdx >= 0 ; fatherIdx--) {
+            adjustHeap(arr, fatherIdx, total);
+        }
+
+         /**将构造成大顶堆之后的根节点，放到最后*/
+        for (int lastIdx = total-1; lastIdx > 0; lastIdx--) {
+            swap(arr, 0, lastIdx);
+             /**发生交换后，重新调整堆结构，由于之前底下的子树都是满足大顶堆，所以从上往下调整*/
+            adjustHeap(arr, 0, lastIdx);
+        }
+    }
+
+    private void adjustHeap(int[] arr, int fatherIdx, int length) {
+        int oldFather = arr[fatherIdx];
+
+        for (int leftSonIdx = fatherIdx*2+1; leftSonIdx < length; leftSonIdx = leftSonIdx*2+1) {
+            int maxSonIdx = leftSonIdx;
+            int rightSonIdx = leftSonIdx+1;
+
+            if (rightSonIdx < length && arr[leftSonIdx] < arr[rightSonIdx])
+                maxSonIdx = rightSonIdx;
+
+            if (arr[maxSonIdx] > oldFather) {
+                swap(arr, maxSonIdx, fatherIdx);
+                /**老大被换下来之后，暂时坐在之前最大儿子的位置上
+                 * 调整下面的子树时，下一跳是交换位置下的子节点*/
+                leftSonIdx = fatherIdx = maxSonIdx;
+            } else {
+                break;
+            }
+        }
+    }
 }
