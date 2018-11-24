@@ -63,7 +63,8 @@ public class SortPractice {
 //            shellPractice(arr);
 //        quickPractice(arr, 0, arr.length-1);
 //        mergePractice(arr);
-        heapPractice(arr);
+//        heapPractice(arr);
+        countPractice(arr, 18);
             long endTime = new Date().getTime();
             System.out.println("耗时：" + (endTime - startTime));
         System.out.println("sort after: " + Arrays.toString(arr));
@@ -286,6 +287,33 @@ public class SortPractice {
             } else {
                 break;
             }
+        }
+    }
+
+    //计
+    public void countPractice(int[] arr, int max) {
+        int total = arr.length;
+        int[] originData = Arrays.copyOf(arr, total);
+        int[] countArr = new int[max + 1]; //countArr下标表示排序数值，元素表示出现次数
+
+        //统计排序数值，出现次数
+        for (int i = 0; i < total; i++) {
+            countArr[originData[i]] ++;
+        }
+
+        //根据排序数值出现次数，计算最终排序位置
+        for (int i = 1; i < countArr.length; i++) {
+            countArr[i] += countArr[i - 1];
+        }
+
+        //根据计算结果，调整原始数组各个数值位置
+        for (int i = 0; i < total; i++) {
+            int curData = originData[i];
+            /**countArr中元素值本质表示的是：*/
+            int curDataIdx = countArr[curData]-1;
+            arr[curDataIdx] = curData;
+            /**将当前值的统计位置往前移，因为后面可能还有相同值*/
+            countArr[curData]--;
         }
     }
 }

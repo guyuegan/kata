@@ -61,7 +61,7 @@ public class Sort {
 //        testShell(num);
 //        testShell02(num);
         num = new int[]{6, 1, 2, 7, 9, 3, 4, 5, 10, 8, 8, 15, 7, 6, 17, 18, 13, 0, 14, 2, 16};
-        testQuick(num, 0, num.length-1);
+//        testQuick(num, 0, num.length-1);
 //        testMerge(num);
 //        testHeap(num = new int[]{2,5,3,4,1,2,7});
 //        testCount(num = new int[]{1,2,4,3,4,0,5,4,3,0}, 6);
@@ -228,34 +228,33 @@ public class Sort {
 //        arr = temp;
     }
 
-    //堆 有问题
-    /*public void testHeap(int[] arr) {
-        int lastIdx = arr.length - 1;
-        for (int i = lastIdx/2-1; i >= 0; i--) { //堆构造
-            heapAdjust(arr, i, lastIdx);
+    //堆
+    public void testHeap(int[] arr) {
+        int total = arr.length;
+        for (int i = total/2-1; i >= 0; i--) {
+            heapAdjust(arr, i, total);
         }
-        while (lastIdx >= 0) {
-            swap(arr, 0, lastIdx--); //将堆顶元素与尾节点交换后，长度减1，尾元素最大
-            heapAdjust(arr, 0, lastIdx); //再次对堆进行调整
+        for (int i = total-1; i > 0; i--) {
+            swap(arr, 0, i);
+            heapAdjust(arr, 0, i);
         }
-    }*/
+    }
 
-    /*private void heapAdjust(int[] arr, int fatherIdx, int len) {
-        int left, right, sonIdx; //sonIdx用来指向大的子节点
-        while ((left = 2*fatherIdx+1) <= len) { //当前父节点有(左)子节点的情况
-            right = left + 1; //右节点
-            sonIdx = left;
-            if (sonIdx<len && arr[left]<arr[right]) { //右节点大于左节点
-                sonIdx = right;
-            }
-            if (arr[fatherIdx] < arr[sonIdx]) { //最大子节点大于父节点
-                swap(arr, fatherIdx, sonIdx);
-            } else { //父节点比孩子节点都大，跳出循环
+    private void heapAdjust(int[] arr, int fatherIdx, int len) {
+        int temp = arr[fatherIdx];
+        for (int leftSonIdx = fatherIdx*2+1; leftSonIdx < len; leftSonIdx = leftSonIdx*2+1) {
+            int maxSonIdx = leftSonIdx;
+            int rightSonIdx = leftSonIdx+1;
+            if (rightSonIdx < len && arr[leftSonIdx] < arr[rightSonIdx])
+                maxSonIdx = rightSonIdx;
+            if (arr[maxSonIdx] > temp) {
+                swap(arr, maxSonIdx, fatherIdx);
+                leftSonIdx = fatherIdx = maxSonIdx;
+            } else {
                 break;
             }
-            fatherIdx = sonIdx;
         }
-    }*/
+    }
 
     //计
 
