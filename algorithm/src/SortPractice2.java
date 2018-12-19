@@ -42,7 +42,9 @@ public class SortPractice2 {
         int[] numArr = initArrNegative(10, 100);
         System.out.println("before sort: \n" + Arrays.toString(numArr));
 //        bubble(numArr);
-        choose(numArr);
+//        choose(numArr);
+//        insert(numArr);
+        shell(numArr);
         System.out.println("after sort: \n" + Arrays.toString(numArr));
     }
 
@@ -70,6 +72,58 @@ public class SortPractice2 {
             for (int j = i+1; j < numArr.length; j++) {
                 if (numArr[i] > numArr[j])
                     swap(numArr, i, j);
+            }
+        }
+    }
+
+    //入
+    public void insert(int[] numArr) {
+        /**未排序元素[当前元素]和已排序元素[当前元素前一个元素]对比，
+         * 如果当前元素小于已排序元素的元素，就将已排序元素后移一位，
+         * 当前元素再和更前面的已排序元素比较，直到当前元素不再小于已排序元素，
+         * 那么当前元素插入到令比较停止的元素的后面一位*/
+        for (int i = 1; i < numArr.length; i++) {
+            int curNum = numArr[i];
+            int preIdx = i-1;
+
+            while (preIdx>=0 && curNum<numArr[preIdx]) {
+                numArr[preIdx+1] = numArr[preIdx];
+                preIdx--;
+            }
+            numArr[preIdx+1] = curNum;
+        }
+    }
+
+    //希
+    public void shell(int[] numArr) {
+        /**跨指定间隔使用插入法，一般是元素数量递归对半取间隔
+         * 策略1：取整个序列符合每次间隔的子序列使用插入法
+         * 策略2：根据间隔的跨度，依次取子序列，对这些系列使用插入法*/
+        for (int gap = numArr.length>>1; gap >= 1; gap >>= 1) {
+
+            /*for (int i = gap; i < numArr.length; i+=gap) {
+                int curNum = numArr[i];
+                int preIdx = i - gap;
+
+                while(preIdx>=0 && curNum<numArr[preIdx]) {
+                    numArr[preIdx+gap] = numArr[preIdx];
+                    preIdx -= gap;
+                }
+                numArr[preIdx+gap] = curNum;
+            }*/
+
+            /**更快？？*/
+            for (int i = 0; i < gap; i++) {
+                for (int j = gap+i; j < numArr.length; j+=gap) {
+                    int curNum = numArr[j];
+                    int preIdx = j-gap;
+
+                    while (preIdx>=0 && curNum<numArr[preIdx]) {
+                        numArr[preIdx+gap] = numArr[preIdx];
+                        preIdx -= gap;
+                    }
+                    numArr[preIdx+gap] = curNum;
+                }
             }
         }
     }
