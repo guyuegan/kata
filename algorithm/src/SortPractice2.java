@@ -1,7 +1,7 @@
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SortPractice2 {
     private void swap(int[] arr, int a, int b) {
@@ -39,7 +39,9 @@ public class SortPractice2 {
 
     @Test
     public void testSort() {
-        int[] numArr = initArrNegative(10, 100);
+        int max = 100;
+        //int[] numArr = initArrPositive(10, max);
+        int[] numArr = {12, 66, 14, 75, 98, 97, 58, 23, 82, 26};
         System.out.println("before sort: \n" + Arrays.toString(numArr));
 //        bubble(numArr);
 //        choose(numArr);
@@ -47,7 +49,10 @@ public class SortPractice2 {
 //        shell(numArr);
 //        quick(numArr, 0, numArr.length-1);
 //        devideAndMerge(numArr);
-        heap(numArr);
+//        heap(numArr);
+//        count(numArr, max);
+//        bucket(numArr, max);
+        base(numArr, max);
         System.out.println("after sort: \n" + Arrays.toString(numArr));
     }
 
@@ -239,5 +244,97 @@ public class SortPractice2 {
                 break;
             }
         }
+    }
+
+    //计 不能有负数
+    private void count(int[] numArr, int max) {
+        /**max+1是为了让countArr最大下标为max, 这样才能保存数组最大值出现次数*/
+        int[] countArr = new int[max+1];
+
+        /**汇总每个数值出现的次数，countArr元素下标代表数值，countArr元素值代表次数*/
+        for (int i = 0; i < numArr.length; i++) {
+            countArr[numArr[i]]++;
+        }
+
+        /**汇总每个数值最终的排位，countArr元素下标代表数值，countArr元素值代表排位*/
+        for (int i = 1; i < countArr.length; i++) {
+            countArr[i] += countArr[i - 1];
+        }
+
+        int[] copyArr = Arrays.copyOf(numArr, numArr.length);
+        for (int i = 0; i < copyArr.length; i++) {
+            /**当前数对于统计数组而言，就是一个下标*/
+            int curData = copyArr[i];
+            /**传要排序的数值给countArr, 就能获得数值排位
+             * 这里要减1是因为这个排位包括当前数值自身，要去掉自身*/
+            int curDataIdx = countArr[curData]-1;
+            numArr[curDataIdx] = curData;
+            countArr[curData]--;
+        }
+    }
+
+    //桶[区] 不能有负数
+    private void bucket(int[] numArr, int max) {
+        int bucketSpan = 100;
+        /**以10为跨度分桶[区]，看需要多少个桶[区]*/
+        int bucketNum = 0==max%bucketSpan ? max/bucketSpan : max/bucketSpan+1;
+        /**通过Map, 给每个桶[区]带上编号*/
+        Map<Integer, List<Integer>> bucketArr = new HashMap(bucketNum){{
+            for (int i = 0; i < bucketNum; i++) {
+                put(i, new ArrayList<Integer>(bucketSpan));
+            }
+        }};
+
+        /**将每个数值，划分到不同的桶[区]*/
+        for (int i = 0; i < numArr.length; i++) {
+            int bucketIdx = numArr[i] / bucketSpan;
+            bucketArr.get(bucketIdx).add(numArr[i]);
+        }
+
+        /**对每个桶[区]排序*/
+        List<Integer> storeSortedBucket = new ArrayList<>(numArr.length);
+        bucketArr.forEach((bucketIdx, bucket) -> storeSortedBucket.addAll(bucket.stream().sorted().collect(Collectors.toList())));
+
+        //int[] sortedNumArr = storeSortedBucket.stream().mapToInt(num -> num).toArray();
+        int[] sortedNumArr = storeSortedBucket.stream().mapToInt(Integer::intValue).toArray();
+        for (int i = 0; i < numArr.length; i++) {
+            numArr[i] = sortedNumArr[i];
+        }
+    }
+
+    //基
+    private void base(int[] numArr, int max) {
+        for (int digit=1; digit <= max; digit*=10) {
+            sortByBase(numArr, digit);
+        }
+    }
+
+    private void sortByBase(int[] numArr, int digit) {
+        int[] countArr = new int[10];
+
+        for (int i = 0; i < numArr.length; i++) {
+            int idx = numArr[i] / digit % 10;
+            countArr[idx] ++;
+        }
+
+        for (int i = 1; i < countArr.length; i++) {
+            countArr[i] += countArr[i-1];
+        }
+
+        int[] copyArr = Arrays.copyOf(numArr, numArr.length);
+        /* 从前往后遍历是错误的
+        for (int i = 0; i < numArr.length; i++) {
+            int idx = copyArr[i] / digit % 10;
+            numArr[countArr[idx]-1] = copyArr[i];
+            countArr[idx]--;
+        }*/
+
+        /** 从后往前遍历才是正确的, 因为这样能确保大数值排位在小数组后面。
+         * 如：根据个位排序，14排在12后面，如果从后往前遍历，根据十位排序，12将排在14后面*/
+         for (int i = numArr.length-1; i >= 0; i--) {
+         int idx = copyArr[i] / digit % 10;
+         numArr[countArr[idx]-1] = copyArr[i];
+         countArr[idx]--;
+         }
     }
 }
