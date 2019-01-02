@@ -40,11 +40,12 @@ public class SortPractice2 {
     @Test
     public void testSort() {
         int max = 100;
-        //int[] numArr = initArrPositive(10, max);
-        int[] numArr = {12, 66, 14, 75, 98, 97, 58, 23, 82, 26};
+        int[] numArr = initArrPositive(10, max);
+//        int[] numArr = {12, 66, 14, 75, 98, 97, 58, 23, 82, 26};
         System.out.println("before sort: \n" + Arrays.toString(numArr));
 //        bubble(numArr);
 //        choose(numArr);
+        chooseWithFlag(numArr);
 //        insert(numArr);
 //        shell(numArr);
 //        quick(numArr, 0, numArr.length-1);
@@ -52,7 +53,7 @@ public class SortPractice2 {
 //        heap(numArr);
 //        count(numArr, max);
 //        bucket(numArr, max);
-        base(numArr, max);
+//        base(numArr, max);
         System.out.println("after sort: \n" + Arrays.toString(numArr));
     }
 
@@ -81,6 +82,20 @@ public class SortPractice2 {
                 if (numArr[i] > numArr[j])
                     swap(numArr, i, j);
             }
+        }
+    }
+
+    //择(优化)
+    private void chooseWithFlag(int[] numArr) {
+        for (int i = 0; i < numArr.length; i++) {
+            int minFlag = i;
+            for (int j = i+1; j < numArr.length; j++) {
+                if (numArr[minFlag] > numArr[j])
+                    minFlag = j;
+            }
+
+            if (minFlag != i)
+                swap(numArr, i, minFlag);
         }
     }
 
