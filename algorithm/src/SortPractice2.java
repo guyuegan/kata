@@ -45,11 +45,11 @@ public class SortPractice2 {
         System.out.println("before sort: \n" + Arrays.toString(numArr));
 //        bubble(numArr);
 //        choose(numArr);
-        chooseWithFlag(numArr);
+//        chooseWithFlag(numArr);
 //        insert(numArr);
 //        shell(numArr);
 //        quick(numArr, 0, numArr.length-1);
-//        devideAndMerge(numArr);
+        devideAndMerge(numArr);
 //        heap(numArr);
 //        count(numArr, max);
 //        bucket(numArr, max);
@@ -181,7 +181,7 @@ public class SortPractice2 {
     private void devideAndMerge(int[] numArr) {
         /**在排序前，先建好一个长度等于原数组长度的临时数组，避免递归中频繁开辟空间*/
         int[] temp = new int[numArr.length];
-        devide(numArr, 0, temp.length-1, temp);
+        devide(numArr, 0, numArr.length-1, temp);
     }
 
     private void devide(int[] numArr, int left, int right, int[] temp) {
@@ -239,8 +239,8 @@ public class SortPractice2 {
     }
 
     /**
-     * @param parentIdx 选举老大的位置
-     * @param length    选举老大的范围
+     * @param parentIdx 选举老大的位置(调整起点)
+     * @param length    选举老大的范围(调整范围)
      */
     private void adjustHeap(int[] numArr, int parentIdx, int length) {
         for (int leftChildIdx = parentIdx*2+1; leftChildIdx < length; leftChildIdx = parentIdx*2+1) {
