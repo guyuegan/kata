@@ -39,14 +39,15 @@ public class SortPractice4 {
     @Test
     public void testSort() {
         int max = 100;
-        int[] numArr = initArrPositive(10, max);
+//        int[] numArr = initArrPositive(10, max);
 //        int[] numArr = {12, 66, 14, 75, 98, 97, 58, 23, 82, 26};
+        int[] numArr = {0, 15, 33, 43, 9, 33, 96, 14, 24, 15}; //for quick
         System.out.println("before sort: \n" + Arrays.toString(numArr));
 //        bubble(numArr);
 //        choose(numArr);
 //        insert(numArr);
 //        shell(numArr);
-//        quick(numArr, 0, numArr.length-1);
+        quick(numArr, 0, numArr.length-1);
 //        devideAndMerge(numArr);
 //        heap(numArr);
 //        count(numArr, max);
@@ -120,13 +121,14 @@ public class SortPractice4 {
         if (left >= right)
             return;
 
+        /**/
         int b=left, l=left, r=right;
 
         while ( l != r) {
-            while (l != r && numArr[r] > numArr[b])
+            while (l != r && numArr[r] >= numArr[b])
                 r--;
 
-            while (l != r && numArr[l] < numArr[b])
+            while (l != r && numArr[l] <= numArr[b])
                 l++;
 
             if (l != r)

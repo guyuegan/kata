@@ -41,15 +41,15 @@ public class SortPratice5 {
     public void testSort() {
         int max = 100;
         int[] numArr = initArrPositive(10, max);
-//        int[] numArr = {12, 66, 14, 75, 98, 97, 58, 23, 82, 26};
+//        int[] numArr = {0, 15, 33, 43, 9, 33, 96, 14, 24, 15};
         System.out.println("before sort: \n" + Arrays.toString(numArr));
 //        bubble(numArr);
 //        choose(numArr);
-        insert(numArr);
+//        insert(numArr);
 //        shell(numArr);
 //        quick(numArr, 0, numArr.length-1);
 //        devideAndMerge(numArr);
-//        heap(numArr);
+        heap(numArr);
 //        count(numArr, max);
 //        bucket(numArr, max);
 //        base(numArr, max);
@@ -116,6 +116,108 @@ public class SortPratice5 {
                     if (j-gap != prevIdx)
                         numArr[prevIdx+gap] = curData;
                 }
+            }
+        }
+    }
+
+    private void quick(int[] numArr, int left, int right) {
+        if (left >= right)
+            return;
+
+        int b = left, l = left, r = right;
+
+        while (l != r) {
+            /**
+             * 在小机器人移动判断条件中，如果是numArr[r] < numArr[b]，
+             * 对于这个序列：[96, 43, 33, 33, 24, 15, 15, 14, 9, 0]，会陷入死循环
+             * 如果是numArr[r] <= numArr[b]则不会
+             */
+            while (r != l && numArr[r] <= numArr[b])
+                r--;
+
+            while (l != r && numArr[l] >= numArr[b])
+                l++;
+
+            if (r != l)
+                swap(numArr, l, r);
+        }
+
+        swap(numArr, l, b);
+
+        quick(numArr, left, l);
+        quick(numArr, r+1, right);
+    }
+
+    private void devideAndMerge(int[] numArr) {
+        int[] temp = new int[numArr.length];
+        devide(numArr, 0, numArr.length-1, temp);
+    }
+
+    private void devide(int[] numArr, int left, int right, int[] temp) {
+        if (left >= right)
+            return;
+
+        devide(numArr, left, (left+right)/2, temp);
+        devide(numArr, (left+right)/2+1, right, temp);
+
+        merge(numArr, left, right, temp);
+    }
+
+    private void merge(int[] numArr, int left, int right, int[] temp) {
+        if (left >= right)
+            return;
+
+        int m = (left+right)/2;
+        int l = left, lb = m;
+        int r = m+1, rb = right;
+        int tmpIdx = 0;
+
+        while (l <= lb && r <= rb) {
+            if (numArr[l] >= numArr[r])
+                temp[tmpIdx++] = numArr[l++];
+            else
+                temp[tmpIdx++] = numArr[r++];
+        }
+
+        while (l <= lb)
+            temp[tmpIdx++] = numArr[l++];
+
+        while (r <= rb)
+            temp[tmpIdx++] = numArr[r++];
+
+        tmpIdx = 0;
+        while (left <= right)
+            numArr[left++] = temp[tmpIdx++];
+    }
+
+    private void heap(int[] numArr) {
+        for (int parentIdx = numArr.length/2-1; parentIdx >= 0; parentIdx--) {
+            adjustHeap(numArr, parentIdx, numArr.length);
+        }
+
+        for (int lastIdx = numArr.length-1; lastIdx > 0; lastIdx--) {
+            swap(numArr, 0, lastIdx);
+            adjustHeap(numArr, 0, lastIdx);
+        }
+    }
+
+    private void adjustHeap(int[] numArr, int parentIdx, int length) {
+        for (int leftChildIdx = parentIdx*2+1; leftChildIdx < length; leftChildIdx = parentIdx*2+1) {
+            int minChildIdx = leftChildIdx;
+            int rightChildIdx = leftChildIdx+1;
+
+            if (rightChildIdx < length && numArr[rightChildIdx] < numArr[leftChildIdx])
+                minChildIdx = rightChildIdx;
+
+            /**
+             * 如果子节点大于父节点，值交换
+             * 否则，直接跳出循环（特别注意：凡是用到if的地方都要思考else情况，不管最终是否要加else）
+             */
+            if (numArr[minChildIdx] < numArr[parentIdx]) {
+                swap(numArr, minChildIdx, parentIdx);
+                parentIdx = minChildIdx;
+            } else {
+                break;
             }
         }
     }
