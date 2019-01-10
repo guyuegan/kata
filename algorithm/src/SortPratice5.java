@@ -1,7 +1,6 @@
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class SortPratice5 {
     private void swap(int[] arr, int a, int b) {
@@ -49,9 +48,9 @@ public class SortPratice5 {
 //        shell(numArr);
 //        quick(numArr, 0, numArr.length-1);
 //        devideAndMerge(numArr);
-        heap(numArr);
+//        heap(numArr);
 //        count(numArr, max);
-//        bucket(numArr, max);
+        bucket(numArr, max);
 //        base(numArr, max);
         System.out.println("after sort: \n" + Arrays.toString(numArr));
     }
@@ -211,7 +210,8 @@ public class SortPratice5 {
 
             /**
              * 如果子节点大于父节点，值交换
-             * 否则，直接跳出循环（特别注意：凡是用到if的地方都要思考else情况，不管最终是否要加else）
+             * 否则，直接跳出循环
+             * （特别注意：凡是用到if的地方都要思考else情况，不管最终是否要加else）
              */
             if (numArr[minChildIdx] < numArr[parentIdx]) {
                 swap(numArr, minChildIdx, parentIdx);
@@ -219,6 +219,80 @@ public class SortPratice5 {
             } else {
                 break;
             }
+        }
+    }
+
+    private void count(int[] numArr, int max) {
+        int[] countArr = new int[max + 1];
+
+        for (int i = 0; i < numArr.length; i++) {
+            countArr[numArr[i]]++;
+        }
+
+        for (int i = 1; i < countArr.length; i++) {
+            countArr[i] += countArr[i-1];
+        }
+
+        int[] copyArr = Arrays.copyOf(numArr, numArr.length);
+        for (int i = copyArr.length-1; i >= 0; i--) {
+            int curData = copyArr[i];
+            int curDataIdx = countArr[curData] - 1;
+            numArr[curDataIdx] = curData;
+
+            countArr[curData]--;
+        }
+    }
+
+    private void bucket(int[] numArr, int max) {
+        int bucketSpan = 10;
+        int bucketNum = max % bucketSpan == 0 ? max / bucketSpan : max / bucketSpan + 1;
+
+        Map<Integer, List<Integer>> allBucket = new HashMap<Integer, List<Integer>>(bucketNum) {{
+            for (int i = 0; i < bucketNum; i++) {
+                put(i, new ArrayList<>(bucketSpan));
+            }
+        }};
+
+        for (int i = 0; i < numArr.length; i++) {
+            int bucketIdx = numArr[i] / bucketSpan;
+            allBucket.get(bucketIdx).add(numArr[i]);
+        }
+
+        List<Integer> sortedList = new ArrayList<>(numArr.length);
+        allBucket.forEach((bucketIdx, bucket) -> {
+            Collections.sort(bucket);
+            sortedList.addAll(bucket);
+        });
+
+        for (int i = 0; i < sortedList.size(); i++) {
+            numArr[i] = sortedList.get(i);
+        }
+    }
+
+    private void base(int[] numArr, int max) {
+        for (int digit = 1; digit < max; digit *= 10) {
+            count4Base(numArr, digit);
+        }
+    }
+
+    private void count4Base(int[] numArr, int digit) {
+        int[] countArr = new int[10];
+
+        for (int i = 0; i < numArr.length; i++) {
+            int curDataDigit = numArr[i] / digit % 10;
+            countArr[curDataDigit]++;
+        }
+
+        for (int i = 1; i < numArr.length; i++) {
+            countArr[i] = countArr[i-1];
+        }
+
+        int[] copyArr = Arrays.copyOf(numArr, numArr.length);
+        for (int i = numArr.length-1; i >= 0; i--) {
+            int curDataDigit = copyArr[i] / digit % 10;
+            numArr[countArr[curDataDigit] - 1] = copyArr[i];
+
+            countArr[curDataDigit]--;
         }
     }
 }
