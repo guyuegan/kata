@@ -2,7 +2,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class SortPratice5 {
+public class SortPractice5 {
     private void swap(int[] arr, int a, int b) {
         if (a == b) {
             return ;
