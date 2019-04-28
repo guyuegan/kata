@@ -52,7 +52,7 @@ public class SortPractice6 {
 //        heap(numArr);
 //        count(numArr, max);
 //        bucket(numArr, max);
-        base(numArr, max);
+//        base(numArr, max);
         System.out.println("after sort: \n" + Arrays.toString(numArr));
     }
 

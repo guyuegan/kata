@@ -209,7 +209,7 @@ public class SortPractice5 {
                 minChildIdx = rightChildIdx;
 
             /**
-             * 如果子节点大于父节点，值交换
+             * 如果子节点    大于父节点，值交换
              * 否则，直接跳出循环
              * （特别注意：凡是用到if的地方都要思考else情况，不管最终是否要加else）
              */
