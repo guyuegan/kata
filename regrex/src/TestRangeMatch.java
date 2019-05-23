@@ -8,7 +8,7 @@ public class TestRangeMatch {
     // pattern02会匹配到usa1.xls
     private static Pattern pattern02 = Pattern.compile("[ns]a.\\.xls");
     // Pattern.MULTILINE表示多行匹配 等同于：Pattern.compile("(?m)^[ns]a.\\.xls")
-    private static Pattern pattern03 = Pattern.compile("^[ns]a.\\.xls", Pattern.MULTILINE);
+    private static Pattern pattern03 = Pattern.compile("^[ns]a.\\.xls");
     // 这种用法适合局部忽略大小写的匹配
     private static Pattern pattern04 = Pattern.compile("[Rr]eg[eE]x");
 
@@ -36,6 +36,13 @@ public class TestRangeMatch {
                 "usa1.xls\n" +
                 "sam.xls\n" +
                 "sa1.xls\n";
+        Matcher matcher03 = pattern03.matcher(fileLs);
+        while (matcher03.find()) {
+            System.out.println(matcher03.group());
+        }
+
+        System.out.println("================");
+
         Matcher matcher = pattern05.matcher(fileLs);
         while (matcher.find()) {
             System.out.println(matcher.group());
